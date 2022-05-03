@@ -3,6 +3,12 @@
         "slim/slim": "4.*",
         "slim/psr7": "^1.5",
         "php-di/php-di": "^6.4",
-        "jenssegers/blade": "^1.4"
+        "jenssegers/blade": "^1.4",
+        "illuminate/database": "^8.83"
+    },
+    "autoload": {
+        "psr-4": {
+            "models\\": "models"
+        }        
     }
 }

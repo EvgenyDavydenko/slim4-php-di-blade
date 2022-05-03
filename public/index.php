@@ -4,8 +4,11 @@ use Jenssegers\Blade\Blade;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Illuminate\Database\Capsule\Manager;
+use models\User;
 
 require __DIR__ . '/../vendor/autoload.php';
+$settings = require __DIR__ . '/../config/settings.php';
 
 // Create Container using PHP-DI
 $container = new Container();
@@ -23,21 +26,26 @@ $app = AppFactory::create();
 // Add Error Handling Middleware
 $app->addErrorMiddleware(true, false, false);
 
-$app->get('/home', function (Request $request, Response $response, $args) use($blade) {
-    $body = $blade->make('home', ['name' => 'John Doe'])->render();
+// Add Eloquent ORM
+$capsule = new Manager;
+$capsule->addConnection($settings['db']);
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+$users = User::All();
+
+
+
+$app->get('/', function (Request $request, Response $response, $args) use($blade, $users) {
+    $body = $blade->make('home', compact('users'))->render();
     $response->getBody()->write($body);
     return $response;
 });
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
-
-$app->get('/{name}', function (Request $request, Response $response, array $args) {
-    $name = $args['name'];
-    $response->getBody()->write("Hello, $name");
+$app->get('/about', function (Request $request, Response $response, $args) use($blade) {
+    $body = $blade->make('about')->render();
+    $response->getBody()->write($body);
     return $response;
 });
 
 $app->run();
+//var_dump($users); exit;

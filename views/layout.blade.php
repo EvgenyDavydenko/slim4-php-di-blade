@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>
-            Slim 4 Authentication
+            Slim4 Skeleton
         </title>
     </head>
     <body>
